@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:coursenligne/util/util.dart';
 
 class NotificationTile extends StatelessWidget {
   final String title;
@@ -12,67 +13,51 @@ class NotificationTile extends StatelessWidget {
     required this.title,
     required this.message,
     required this.time,
-    this.isRead = false,
+    required this.isRead,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(vertical: getProportionateScreenHeight(8)),
+      padding: EdgeInsets.all(getProportionateScreenWidth(15)),
       decoration: BoxDecoration(
-        color: isRead ? Colors.white : AppColors.colorPrimary.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: isRead ? Colors.white : AppColors.colorAccent.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: AppColors.colorTint400,
+          width: 0.5,
+        ),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!isRead)
-            Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.only(top: 6, right: 8),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.colorPrimary,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: AppColors.colorTint700,
+                  fontSize: getProportionateScreenWidth(14),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: AppColors.colorTint700,
-                  ),
+              Text(
+                time,
+                style: TextStyle(
+                  color: AppColors.colorTint500,
+                  fontSize: getProportionateScreenWidth(12),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  message,
-                  style: TextStyle(
-                    color: AppColors.colorTint600,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  time,
-                  style: TextStyle(
-                    color: AppColors.colorTint500,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          SizedBox(height: getProportionateScreenHeight(8)),
+          Text(
+            message,
+            style: TextStyle(
+              color: AppColors.colorTint600,
+              fontSize: getProportionateScreenWidth(13),
             ),
           ),
         ],
