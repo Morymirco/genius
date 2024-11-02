@@ -7,6 +7,8 @@ import 'package:coursenligne/screen/notification/notification_screen.dart';
 import 'package:coursenligne/screen/cart/cart_screen.dart';
 import 'package:coursenligne/screen/auth/login_screen.dart';
 import 'package:coursenligne/screen/auth/register_screen.dart';
+import 'package:coursenligne/screen/course-detail/course-detail.dart';
+import 'package:coursenligne/screen/my-courses/my-courses.dart';
 
 final Map<String, WidgetBuilder> routes = {
   '/home': (context) => const HomeScreenBody(),
@@ -18,4 +20,6 @@ final Map<String, WidgetBuilder> routes = {
   CartScreen.routeName: (context) => const CartScreen(),
   LoginScreen.routeName: (context) => const LoginScreen(),
   RegisterScreen.routeName: (context) => const RegisterScreen(),
+  CourseDetailScreen.routeName: (context) => const CourseDetailScreen(),
+  MyCoursesScreen.routeName: (context) => const MyCoursesScreen(),
 };

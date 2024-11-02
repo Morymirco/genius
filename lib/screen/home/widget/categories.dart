@@ -6,16 +6,15 @@ import 'category-tile.dart';
 
 class Categories extends StatefulWidget {
   const Categories({
-    Key ? key
+    Key? key
   }): super(key: key);
 
   @override
-  State < Categories > createState() => _CategoriesState();
+  State<Categories> createState() => _CategoriesState();
 }
 
-class _CategoriesState extends State < Categories > {
-
-  List < Category > categories = [];
+class _CategoriesState extends State<Categories> {
+  List<Category> categories = [];
 
   @override
   void didChangeDependencies() {
@@ -44,7 +43,7 @@ class _CategoriesState extends State < Categories > {
                   categories[index].isSelected = true;
                 });
               },
-              child: CategoryTile(category: categories[index], )
+              child: CategoryTile(category: categories[index])
             );
           },
           separatorBuilder: (context, index) {
@@ -57,8 +56,7 @@ class _CategoriesState extends State < Categories > {
     );
   }
 
-
-  Future < void > provideCategories() async {
+  Future<void> provideCategories() async {
     categories.add(Category(title: 'Tous', isSelected: true));
     categories.add(Category(title: 'Design', isSelected: false));
     categories.add(Category(title: 'Codage', isSelected: false));

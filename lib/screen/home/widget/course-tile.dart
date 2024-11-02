@@ -36,27 +36,16 @@ class CourseTile extends StatelessWidget {
         ),
         width: getProportionateScreenWidth(220),
         child: Padding(
-          padding: const EdgeInsets.all(6),
+          padding: EdgeInsets.all(10),
           child: Column(
             children: [
-              Expanded(
-                flex: 4,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: _courseImage(course!),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _courseTitleAndPrice(course!),
-                    _courseTeacher(course!),
-                    _courseDurationInfo(course!),
-                  ],
-                ),
-              ),
+              _courseImage(course!),
+              SizedBox(height: getProportionateScreenHeight(15)),
+              _courseTitleAndPrice(course!),
+              SizedBox(height: getProportionateScreenHeight(15)),
+              _courseTeacher(course!),
+              SizedBox(height: getProportionateScreenHeight(15)),
+              _courseDurationInfo(course!)
             ],
           ),
         ),
@@ -65,13 +54,16 @@ class CourseTile extends StatelessWidget {
   }
 
   Widget _courseImage(Course course) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(
-          image: AssetImage(course.courseImage!),
-          fit: BoxFit.cover,
-        )
+    return AspectRatio(
+      aspectRatio: 1.4,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: AssetImage(course.courseImage!),
+            fit: BoxFit.cover,
+          )
+        ),
       ),
     );
   }

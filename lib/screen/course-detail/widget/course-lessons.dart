@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
-import 'package:coursenligne/model/course/course.dart';
+import 'package:coursenligne/model/model.dart';
 import 'package:coursenligne/util/util.dart';
 import 'course-lesson-tile.dart';
 
 class CourseLessons extends StatelessWidget {
-  final Course ? course;
+  final Course? course;
   const CourseLessons({
-    Key ? key,
+    Key? key,
     this.course
   }): super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,14 +37,19 @@ class CourseLessons extends StatelessWidget {
             ],
           ),
           ListView.separated(
-            itemCount: course!.lessons!.length,
+            itemCount: course?.lessons?.length ?? 0,
             shrinkWrap: true,
-            padding: EdgeInsets.only(top:getProportionateScreenHeight(20),bottom:getProportionateScreenHeight(60) ),
+            padding: EdgeInsets.only(
+              top: getProportionateScreenHeight(20),
+              bottom: getProportionateScreenHeight(60)
+            ),
             physics: NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) => SizedBox(
               height: 14.0,
             ),
-            itemBuilder: (context, index) => CourseLessonTile(lesson: course!.lessons![index], )
+            itemBuilder: (context, index) => CourseLessonTile(
+              lesson: course?.lessons?[index],
+            )
           )
         ],
       ),

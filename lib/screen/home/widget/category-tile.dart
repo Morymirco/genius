@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/model/model.dart';
 import 'package:coursenligne/util/util.dart';
+import 'package:flutter/material.dart';
 
 class CategoryTile extends StatelessWidget {
   final Category ? category;
