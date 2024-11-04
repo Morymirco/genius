@@ -14,6 +14,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late Animation<double> _fadeAnimation;
   late Animation<double> _rotateAnimation;
   late Animation<double> _dotAnimation;
+  late Animation<double> _motifAnimation;
 
   @override
   void initState() {
@@ -38,6 +39,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
 
     _dotAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.8, 1.0, curve: Curves.elasticOut),
+      ),
+    );
+    
+    _motifAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: const Interval(0.8, 1.0, curve: Curves.elasticOut),
@@ -121,6 +129,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         );
                       },
                     ),
+                    AnimatedBuilder(
+                      animation: _motifAnimation,
+                      builder: (context, child) {
+                        return Positioned(
+                          right: 220 - 8,
+                          bottom: 0,
+                          child: Transform.translate(
+                            offset: Offset(0, 55 * _motifAnimation.value),
+                            child:SvgPicture.asset('assets/images/motifbas.svg')
+                          ),
+                        );
+                      },
+                    ),
+                    
                   ],
                 ),
                 const SizedBox(height: 20),

@@ -2,10 +2,11 @@ import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/cart/cart_screen.dart';
 import 'package:coursenligne/screen/courses/courses_list_screen.dart';
 import 'package:coursenligne/screen/home/home-body.dart';
-import 'package:coursenligne/screen/profile/profile_screen.dart';
 import 'package:coursenligne/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../profile/profile_screen.dart';
 
 class Nav extends StatefulWidget {
   static String routeName = '/nav';

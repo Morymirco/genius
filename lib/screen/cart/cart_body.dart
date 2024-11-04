@@ -1,4 +1,5 @@
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:coursenligne/screen/cart/checkout_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/cart_item.dart';
@@ -69,7 +70,7 @@ class CartBody extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.colorPrimary,
+                    color: Color(0xFF43BCCD),
                   ),
                 ),
               ],
@@ -80,18 +81,23 @@ class CartBody extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Action pour le paiement
+                  Navigator.pushNamed(
+                    context,
+                    CheckoutScreen.routeName,
+                    arguments: 600.0, // Passer le montant total comme argument
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.colorPrimary,
+                  backgroundColor: Color(0xFF6A3085),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child:  Text(
+                child: const Text(
                   "Payer maintenant",
                   style: TextStyle(
+                    
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

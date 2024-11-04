@@ -20,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
+
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -162,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text(
                           "Mot de passe oublié ?",
                           style: TextStyle(
-                            color: AppColors.colorBlue,
+                            color: Color(0xFF6A3085),
                             fontWeight: FontWeight.w500,
                           ),
                         ),

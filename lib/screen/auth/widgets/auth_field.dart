@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:flutter/material.dart';
 
 class AuthField extends StatelessWidget {
   final TextEditingController controller;
@@ -30,6 +30,7 @@ class AuthField extends StatelessWidget {
       validator: validator,
       style: const TextStyle(color: AppColors.colorTint700),
       decoration: InputDecoration(
+        errorStyle: const TextStyle(color:Color.fromARGB(255, 140, 24, 16)),
         hintText: hintText,
         hintStyle: const TextStyle(color: AppColors.colorTint500),
         prefixIcon: Icon(icon, color: AppColors.colorTint500),
