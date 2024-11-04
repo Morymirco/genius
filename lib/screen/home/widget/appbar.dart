@@ -1,6 +1,7 @@
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/notification/notification_screen.dart';
 import 'package:coursenligne/screen/profile/profile_screen.dart';
+import 'package:coursenligne/screen/search/search_screen.dart';
 import 'package:coursenligne/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -140,54 +141,68 @@ class HomeScreenAppBar extends StatelessWidget {
   }
 
   Widget _searchField() {
-    return Container(
-      height: getProportionateScreenHeight(45),
-      decoration: BoxDecoration(
-        color: AppColors.colorTint200,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      child: TextField(
-        autofocus: false,
-        style: TextStyle(
-          fontSize: getProportionateScreenWidth(14),
-          color: AppColors.colorTint700
-        ),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-          hintText: 'Rechercher un cours',
-          hintStyle: TextStyle(
-            color: AppColors.colorTint500,
-            fontSize: getProportionateScreenWidth(14),
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SearchScreen()),
+          );
+        },
+        child: Container(
+          height: getProportionateScreenHeight(45),
+          decoration: BoxDecoration(
+            color: AppColors.colorTint200,
+            borderRadius: BorderRadius.circular(25),
           ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(12),
-            child: SvgPicture.asset(
-              'assets/icons/search.svg',
-              color: AppColors.colorTint500,
-            ),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: SvgPicture.asset(
+                  'assets/icons/search.svg',
+                  color: AppColors.colorTint500,
+                ),
+              ),
+              Text(
+                'Rechercher un cours',
+                style: TextStyle(
+                  color: AppColors.colorTint500,
+                  fontSize: getProportionateScreenWidth(14),
+                ),
+              ),
+            ],
           ),
-          border: InputBorder.none,
         ),
       ),
     );
   }
 
   Widget _setting() {
-    return Container(
-      height: getProportionateScreenWidth(45),
-      width: getProportionateScreenWidth(45),
-      decoration: BoxDecoration(
-        color: AppColors.colorTint200,
-        shape: BoxShape.circle,
-      ),
-      child: IconButton(
-        icon: SvgPicture.asset(
-          'assets/icons/setting.svg',
-          color: AppColors.colorPrimary,
-          width: getProportionateScreenWidth(20),
-          height: getProportionateScreenWidth(20),
+    return Builder(
+      builder: (context) => Container(
+        height: getProportionateScreenWidth(45),
+        width: getProportionateScreenWidth(45),
+        decoration: BoxDecoration(
+          color: AppColors.colorTint200,
+          shape: BoxShape.circle,
         ),
-        onPressed: () {},
+        child: IconButton(
+          icon: SvgPicture.asset(
+            'assets/icons/setting.svg',
+            color: AppColors.colorPrimary,
+            width: getProportionateScreenWidth(20),
+            height: getProportionateScreenWidth(20),
+          ),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Paramètres non disponibles'),
+                backgroundColor: Color(0xFF43bccd),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

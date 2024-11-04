@@ -1,5 +1,6 @@
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/model/model.dart';
+import 'package:coursenligne/screen/course-viewer/course_viewer_screen.dart';
 import 'package:coursenligne/util/util.dart';
 import 'package:coursenligne/widget/button/buttons.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +55,17 @@ class CourseDetailScreenBody extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.all(15),
                 child: GeneralButton(
-                  text: 'S\'inscrire maintentant!',
+                  text: 'S\'inscrire maintenant!',
                   onPressed: () {
-                   
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CourseViewerScreen(
+                          course: course!,
+                          initialLessonIndex: 0,
+                        ),
+                      ),
+                    );
                   },
                   activeButton: true
                 ),

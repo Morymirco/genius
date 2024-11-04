@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:coursenligne/config/theme/theme.dart';
+import 'package:coursenligne/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -63,6 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const Text(
                 'Choisir une photo',
                 style: TextStyle(
+                  color: AppColors.colorTint700,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -239,13 +242,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: _back(context),
         title: const Text(
           'Modifier le profil',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: AppColors.colorTint700, fontWeight: FontWeight.bold),
         ),
         actions: [
           TextButton(
@@ -406,6 +406,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
           }
           return null;
         },
+      ),
+    );
+  }
+   Widget _back(BuildContext context) {
+    return Container(
+      height: getProportionateScreenWidth(40),
+      width: getProportionateScreenWidth(40),
+      margin: EdgeInsets.only(left: getProportionateScreenWidth(15)),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.colorTint400)
+      ),
+      child: IconButton(
+        icon: Icon(
+          Icons.arrow_back_ios,
+          color: AppColors.colorTint600,
+          size: 18,
+        ),
+        onPressed: () => Navigator.pop(context),
       ),
     );
   }

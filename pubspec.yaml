@@ -47,6 +47,10 @@ dependencies:
   permission_handler: ^11.3.1
   image_picker: ^1.1.2
   provider: ^6.0.5
+  firebase_storage: ^11.6.5
+  shared_preferences: ^2.3.2
+  pin_code_fields: ^8.0.1
+  video_player: ^2.9.2
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +80,7 @@ flutter:
     - assets/images/
     - assets/icons/google.svg
     - assets/icons/apple.svg
+    - assets/images/logo.jpg
 
   fonts:
     - family: Muli
@@ -87,7 +92,7 @@ flutter:
           weight: 300
 
 flutter_native_splash:
-  color: "#ffffff"  # Couleur de fond du splash screen
+  color: "#000000"  # Couleur de fond du splash screen
   image: assets/images/screen.png  # Image du splash
   android: true  # Activer pour Android
   ios: true  # Activer pour iOS

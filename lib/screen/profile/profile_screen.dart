@@ -1,4 +1,6 @@
+import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/profile/edit_profile_page.dart';
+import 'package:coursenligne/util/size/size-config.dart';
 import 'package:flutter/material.dart';
 // Ajouter cette nouvelle classe
 class MonProfil extends StatelessWidget {
@@ -8,16 +10,30 @@ class MonProfil extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        centerTitle: true,
+        title: const Text('Profile',style: TextStyle(
+          color: AppColors.colorTint700,
+        ),),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const EditProfilePage()),
-  );
-            },
+          Container(
+            height: getProportionateScreenWidth(40),
+      width: getProportionateScreenWidth(40),
+      margin: EdgeInsets.only(left: getProportionateScreenWidth(15)),
+            decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.colorTint400)
+      ),
+            child: IconButton(
+              
+              icon: const Icon(Icons.edit),
+            
+              onPressed: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const EditProfilePage()),
+              );
+              },
+            ),
           ),
         ],
       ),

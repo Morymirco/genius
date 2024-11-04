@@ -1,5 +1,6 @@
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/model/model.dart';
+import 'package:coursenligne/screen/courses/courses_list_screen.dart';
 import 'package:coursenligne/util/util.dart';
 import 'package:flutter/material.dart';
 
@@ -64,14 +65,18 @@ class _PopularCoursesState extends State < PopularCourses > {
             fontSize: getProportionateScreenHeight(18)
           ),
         ),
-        Text(
-          'Voir Tout',
+        TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CoursesListScreen()));
+          },
+          child: Text(
+            'Voir Tout',
           style: TextStyle(
             color: AppColors.colorTint600,
             fontWeight: FontWeight.bold,
             fontSize: getProportionateScreenHeight(13)
           ),
-        )
+        ))
       ],
     );
   }

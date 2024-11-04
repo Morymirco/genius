@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:flutter/material.dart';
+
 import 'widgets/cart_item.dart';
 
 class CartBody extends StatelessWidget {
@@ -16,15 +17,15 @@ class CartBody extends StatelessWidget {
             children: const [
               CartItem(
                 title: "Flutter Avancé",
-                instructor: "John Doe",
-                price: "99.99€",
-                imageUrl: "assets/images/course-image-1.jpg",
+                instructor: "Mory koulibaly",
+                price: "100 milles GNF",
+                imageUrl: "assets/images/marketting.jpg",
               ),
               CartItem(
                 title: "React Native Master",
-                instructor: "Jane Smith",
-                price: "89.99€",
-                imageUrl: "assets/images/course-image-2.jpg",
+                instructor: "Thierno Suleymane ",
+                price: "500 milles GNF",
+                imageUrl: "assets/images/ui-ux-design.jpg",
               ),
             ],
           ),
@@ -64,7 +65,7 @@ class CartBody extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "189.98€",
+                  "600 milles GNF",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -88,9 +89,10 @@ class CartBody extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
+                child:  Text(
                   "Payer maintenant",
                   style: TextStyle(
+                    color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

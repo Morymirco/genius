@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
-import 'package:coursenligne/screen/auth/widgets/auth_field.dart';
+import 'package:coursenligne/screen/auth/forgot_password_screen.dart';
 import 'package:coursenligne/screen/auth/register_screen.dart';
-import 'package:coursenligne/screen/nav/nav.dart';
+import 'package:coursenligne/screen/auth/widgets/auth_field.dart';
 import 'package:coursenligne/screen/auth/widgets/social_button.dart';
+import 'package:coursenligne/screen/nav/nav.dart';
+import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   static String routeName = '/login';
@@ -37,9 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 50),
+                  SizedBox(height: 20,),
+                  Container(
+
+                    child: Image.asset("assets/images/logo.jpg",width: 100,),
+                  ),
+                  const SizedBox(height: 20),
                   Text(
                     'Connexion',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -49,12 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Bienvenue sur Genius',
+                    'Bienvenue sur Geniusclass',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.colorTint500,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
                   AuthField(
                     controller: _emailController,
                     hintText: 'Email',
@@ -126,6 +133,43 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      
+                      Row(
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                border: Border.all(
+                                  
+                                  color:AppColors.colorBlue
+                                )
+                              ),
+                              width: 12,
+                              height: 12,
+                          ),
+                          SizedBox(width: 5,),
+                          Text('Remember',style: TextStyle(color: AppColors.colorTint700,)),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
+                        },
+                        child: const Text(
+                          "Mot de passe oublié ?",
+                          style: TextStyle(
+                            color: AppColors.colorBlue,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                  ,
                   const SizedBox(height: 24),
                   Row(
                     children: [

@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:coursenligne/util/util.dart';
 import 'cart_body.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static String routeName = '/cart';
   
   const CartScreen({Key? key}) : super(key: key);
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        automaticallyImplyLeading: false,
+        title: Text(
           'Mon Panier',
           style: TextStyle(
             color: AppColors.colorTint700,
-            fontWeight: FontWeight.bold,
+            fontSize: getProportionateScreenWidth(17)
           ),
         ),
       ),

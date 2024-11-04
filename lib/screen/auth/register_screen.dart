@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:coursenligne/config/theme/theme.dart';
-import 'package:coursenligne/screen/auth/widgets/auth_field.dart';
 import 'package:coursenligne/screen/auth/login_screen.dart';
-import 'package:coursenligne/screen/nav/nav.dart';
+import 'package:coursenligne/screen/auth/widgets/auth_field.dart';
 import 'package:coursenligne/screen/auth/widgets/social_button.dart';
+import 'package:coursenligne/screen/nav/nav.dart';
+import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String routeName = '/register';
@@ -42,9 +42,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+
                 children: [
-                  const SizedBox(height: 50),
+                   SizedBox(height: 5,),
+                  Container(
+
+                    child: Image.asset("assets/images/logo.jpg",width: 100,),
+                  ),
+                  const SizedBox(height: 20),
                   Text(
                     'Inscription',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -54,12 +60,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Créez votre compte Genius',
+                    'Créez votre compte Geniusclass',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: AppColors.colorTint500,
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 10),
                   AuthField(
                     controller: _nameController,
                     hintText: 'Nom complet',
@@ -71,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   AuthField(
                     controller: _emailController,
                     hintText: 'Email',
@@ -87,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   AuthField(
                     controller: _passwordController,
                     hintText: 'Mot de passe',
@@ -114,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   AuthField(
                     controller: _confirmPasswordController,
                     hintText: 'Confirmer le mot de passe',
@@ -141,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 18),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -170,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 18),
                   Row(
                     children: [
                       Expanded(child: _buildDivider()),
@@ -187,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Expanded(child: _buildDivider()),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 18),
                   SocialButton(
                     iconPath: 'assets/icons/google.svg',
                     label: 'Continuer avec Google',
