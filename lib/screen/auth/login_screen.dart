@@ -2,8 +2,11 @@ import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/auth/forgot_password_screen.dart';
 import 'package:coursenligne/screen/auth/register_screen.dart';
 import 'package:coursenligne/screen/auth/widgets/auth_field.dart';
+import 'package:coursenligne/screen/auth/widgets/logo_widget.dart';
 import 'package:coursenligne/screen/auth/widgets/social_button.dart';
 import 'package:coursenligne/screen/nav/nav.dart';
+import 'package:coursenligne/services/auth_service.dart';
+import 'package:coursenligne/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,8 +22,111 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
+  final _authService = AuthService();
+  final _firestoreService = FirestoreService();
 
+  Future<void> _handleLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
 
+      try {
+        final userCredential = await _authService.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+        if (userCredential != null && mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Nav()),
+            (route) => false,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Connexion réussie !'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Erreur de connexion: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userCredential = await _authService.signInWithGoogle();
+      
+      if (userCredential != null && userCredential.user != null) {
+        // Vérifier si c'est un nouvel utilisateur
+        if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+          // Créer le profil dans Firestore pour un nouvel utilisateur
+          await _firestoreService.createUserProfile(
+            userCredential.user!.uid,
+            {
+              'name': userCredential.user!.displayName ?? '',
+              'email': userCredential.user!.email ?? '',
+              'photoURL': userCredential.user!.photoURL ?? '',
+              'role': 'student',
+            },
+          );
+        }
+
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Nav()),
+            (route) => false,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Connexion réussie !'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Erreur de connexion Google: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erreur lors de la connexion avec Google'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -43,11 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20,),
-                  Container(
-
-                    child: Image.asset("assets/images/logo.jpg",width: 100,),
-                  ),
+                  const SizedBox(height: 20),
+                  const LogoWidget(),
                   const SizedBox(height: 20),
                   Text(
                     'Connexion',
@@ -110,29 +213,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Nav()),
-                          );
-                        }
-                      },
+                      onPressed: _isLoading ? null : _handleLogin,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.colorPrimary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
-                        'Se connecter',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Se connecter',
+                              style: TextStyle(
+                                 color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                   SizedBox(height: 10,),
@@ -193,9 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SocialButton(
                     iconPath: 'assets/icons/google.svg',
                     label: 'Continuer avec Google',
-                    onPressed: () {
-                      // Implémenter la connexion Google
-                    },
+                    onPressed: _handleGoogleSignIn,
                   ),
                   const SizedBox(height: 16),
                   SocialButton(

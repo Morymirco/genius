@@ -105,21 +105,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       child: SvgPicture.asset(
                         'assets/images/logosc.svg',
                         fit: BoxFit.contain,
-                        width: 280,
-                        height: 280,
+                        width: 210,
+                        height: 210,
                       ),
                     ),
                     AnimatedBuilder(
                       animation: _dotAnimation,
                       builder: (context, child) {
                         return Positioned(
-                          right: 220 - 8,
-                          top: 106 - 55 * _dotAnimation.value,
+                          right: 160 - 8,
+                          top: 90 - 55 * _dotAnimation.value,
                           child: Transform.scale(
                             scale: _dotAnimation.value,
                             child: Container(
-                              width: 45,
-                              height: 45,
+                              width: 40,
+                              height: 40,
                               decoration: const BoxDecoration(
                                 color: Color(0xFF43bccd),
                                 shape: BoxShape.circle,

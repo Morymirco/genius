@@ -83,7 +83,7 @@ class CourseTile extends StatelessWidget {
         Text(
           course.coursePrice!,
           style: TextStyle(
-            color: AppColors.colorAccent,
+            color: AppColors.colorPrimary,
             fontWeight: FontWeight.bold,
             fontSize: getProportionateScreenWidth(14)
           )

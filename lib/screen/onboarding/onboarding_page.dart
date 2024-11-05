@@ -1,4 +1,5 @@
 import 'package:coursenligne/screen/auth/register_screen.dart';
+import 'package:coursenligne/screen/screen.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -67,7 +68,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: Align(
                   alignment: Alignment.topRight,
                   child: TextButton(
-                    onPressed: _navigateToRegister,
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>Nav()
+                      ));
+                    },
                     child: const Text(
                       'Skip',
                       style: TextStyle(

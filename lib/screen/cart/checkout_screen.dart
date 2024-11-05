@@ -199,7 +199,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _buildPaymentOption(
           'card',
           'Carte bancaire',
-          'assets/images/orange-money.png',
+          'assets/images/visa.png',
         ),
       ],
     );

@@ -1,20 +1,44 @@
+import 'dart:math';
+
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/notification/notification_screen.dart';
 import 'package:coursenligne/screen/profile/profile_screen.dart';
-import 'package:coursenligne/screen/search/search_screen.dart';
+import 'package:coursenligne/services/auth_service.dart';
 import 'package:coursenligne/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomeScreenAppBar extends StatelessWidget {
-  const HomeScreenAppBar({Key? key}): super(key: key);
+class HomeScreenAppBar extends StatefulWidget {
+  const HomeScreenAppBar({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreenAppBar> createState() => _HomeScreenAppBarState();
+}
+
+class _HomeScreenAppBarState extends State<HomeScreenAppBar> {
+  final _authService = AuthService();
+
+  String _getInitials(String? name) {
+    if (name == null || name.isEmpty) return '';
+    final names = name.trim().split(' ');
+    if (names.length >= 2) {
+      return '${names[0][0]}${names[1][0]}'.toUpperCase();
+    }
+    return name.substring(0, min(2, name.length)).toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final user = _authService.currentUser;
+    final initials = _getInitials(user?.displayName);
+
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(20),
-        vertical: getProportionateScreenHeight(15),
+      height: getProportionateScreenHeight(140),
+      padding: EdgeInsets.only(
+        left: getProportionateScreenWidth(20),
+        right: getProportionateScreenWidth(20),
+        top: getProportionateScreenHeight(10),
+        bottom: getProportionateScreenHeight(10),
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -27,55 +51,117 @@ class HomeScreenAppBar extends StatelessWidget {
         ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _userName(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bonjour,',
+                    style: TextStyle(
+                      color: AppColors.colorTint500,
+                      fontSize: getProportionateScreenWidth(14),
+                    ),
+                  ),
+                  Text(
+                    user?.displayName ?? 'Utilisateur',
+                    style: TextStyle(
+                      color: AppColors.colorTint700,
+                      fontSize: getProportionateScreenWidth(18),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
               Row(
                 children: [
                   _notification(context),
                   SizedBox(width: getProportionateScreenWidth(12)),
-                  _avatar(context)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MonProfil()),
+                      );
+                    },
+                    child: user?.photoURL != null && user!.photoURL!.isNotEmpty
+                        ? CircleAvatar(
+                            radius: 20,
+                            backgroundColor: AppColors.colorTint200,
+                            backgroundImage: NetworkImage(user.photoURL!),
+                          )
+                        : CircleAvatar(
+                            radius: 20,
+                            backgroundColor: const Color(0xFF43BCCD),
+                            child: Text(
+                              initials,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          Row(
-            children: [
-              Expanded(child: _searchField()),
-              SizedBox(width: getProportionateScreenWidth(12)),
-              _setting(),
-            ],
+          Container(
+            margin: EdgeInsets.only(top: getProportionateScreenHeight(10)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/search');
+                    },
+                    child: Container(
+                      height: getProportionateScreenHeight(45),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: getProportionateScreenWidth(12),
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.colorTint200,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: SvgPicture.asset(
+                              'assets/icons/search.svg',
+                              color: AppColors.colorTint500,
+                              width: getProportionateScreenWidth(18),
+                              height: getProportionateScreenWidth(18),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Rechercher un cours',
+                              style: TextStyle(
+                                color: AppColors.colorTint500,
+                                fontSize: getProportionateScreenWidth(14),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: getProportionateScreenWidth(12)),
+                _setting(),
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _userName() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Bienvenue',
-          style: TextStyle(
-            color: AppColors.colorTint500,
-            fontSize: getProportionateScreenWidth(14),
-          ),
-        ),
-        SizedBox(height: getProportionateScreenHeight(4)),
-        Text(
-          'MircoLgv',
-          style: TextStyle(
-            color: AppColors.colorTint700,
-            fontWeight: FontWeight.bold,
-            fontSize: getProportionateScreenWidth(20),
-          ),
-        )
-      ],
     );
   }
 
@@ -114,66 +200,6 @@ class HomeScreenAppBar extends StatelessWidget {
         onPressed: () {
           Navigator.pushNamed(context, NotificationScreen.routeName);
         }
-      ),
-    );
-  }
-
-  Widget _avatar(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MonProfil()),
-        );
-      },
-      child: Container(
-        height: getProportionateScreenWidth(40),
-        width: getProportionateScreenWidth(40),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-            image: AssetImage('assets/images/profile-image.jpg'),
-            fit: BoxFit.cover
-          )
-        ),
-      ),
-    );
-  }
-
-  Widget _searchField() {
-    return Builder(
-      builder: (context) => GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SearchScreen()),
-          );
-        },
-        child: Container(
-          height: getProportionateScreenHeight(45),
-          decoration: BoxDecoration(
-            color: AppColors.colorTint200,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: SvgPicture.asset(
-                  'assets/icons/search.svg',
-                  color: AppColors.colorTint500,
-                ),
-              ),
-              Text(
-                'Rechercher un cours',
-                style: TextStyle(
-                  color: AppColors.colorTint500,
-                  fontSize: getProportionateScreenWidth(14),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

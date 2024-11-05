@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "333816781312",
-    "project_id": "geniusclass-dd3af",
-    "storage_bucket": "geniusclass-dd3af.appspot.com"
+    "project_number": "438867035294",
+    "project_id": "genius-64806",
+    "storage_bucket": "genius-64806.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:333816781312:android:4bc9c86f31572c1bad56e5",
+        "mobilesdk_app_id": "1:438867035294:android:d1dc1a9b9cc2a6924d678f",
         "android_client_info": {
           "package_name": "com.genius.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAlQXNOcRfWZ-_vT8BkhMRr_cdk8GrdV_U"
+          "current_key": "AIzaSyDnUF5FXLi364aujfxvwR7TJWatQf0jwPc"
         }
       ],
       "services": {

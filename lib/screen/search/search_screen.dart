@@ -2,6 +2,7 @@ import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/model/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SearchScreen extends StatefulWidget {
   static String routeName = '/search';
@@ -15,6 +16,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Course> _searchResults = [];
   bool _isSearching = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,8 +27,17 @@ class _SearchScreenState extends State<SearchScreen> {
   void _handleSearch(String query) {
     setState(() {
       _isSearching = query.isNotEmpty;
-      // Ici, vous pouvez implémenter la logique de recherche réelle
-      _searchResults = []; // Remplacer par la vraie recherche
+      _isLoading = true;
+    });
+
+    // Simuler un délai de chargement
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _searchResults = []; // Remplacer par la vraie recherche
+        });
+      }
     });
   }
 
@@ -69,11 +80,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       decoration: InputDecoration(
                         hintText: 'Rechercher un cours...',
                         hintStyle: const TextStyle(
-                          
                           color: AppColors.colorTint500,
                           fontSize: 14,
                         ),
-                        contentPadding:EdgeInsets.only(top: 8),
+                        contentPadding: const EdgeInsets.only(top: 8),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(12),
                           child: SvgPicture.asset(
@@ -91,7 +101,6 @@ class _SearchScreenState extends State<SearchScreen> {
                               )
                             : null,
                         border: InputBorder.none,
-                        // contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
                       onChanged: _handleSearch,
                     ),
@@ -102,19 +111,77 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      body: _isSearching && _searchResults.isEmpty
-          ? const Center(
-              child: Text(
-                'Aucun résultat trouvé',
-                style: TextStyle(
-                  color: AppColors.colorTint500,
-                  fontSize: 16,
-                ),
+      body: _isSearching
+          ? _isLoading
+              ? _buildShimmerLoading()
+              : _searchResults.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Aucun résultat trouvé',
+                        style: TextStyle(
+                          color: AppColors.colorTint500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    )
+                  : _buildSearchResults()
+          : _buildSuggestedSearches(),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 20,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          width: 100,
+                          height: 16,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          width: 150,
+                          height: 16,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            )
-          : !_isSearching
-              ? _buildSuggestedSearches()
-              : _buildSearchResults(),
+            );
+          },
+        ),
+      ),
     );
   }
 
