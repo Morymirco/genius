@@ -1,12 +1,13 @@
 import 'package:coursenligne/screen/nav/nav.dart';
 import 'package:coursenligne/screen/splash/splash_screen.dart';
 import 'package:coursenligne/util/size/size-config.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'config/routes/routes.dart';
+import 'firebase_options.dart';
 import 'services/course_service.dart';
 
 Future<void> main() async {

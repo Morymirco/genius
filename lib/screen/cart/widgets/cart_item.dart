@@ -6,6 +6,7 @@ class CartItem extends StatelessWidget {
   final String instructor;
   final String price;
   final String imageUrl;
+  final VoidCallback onDelete;
 
   const CartItem({
     Key? key,
@@ -13,6 +14,7 @@ class CartItem extends StatelessWidget {
     required this.instructor,
     required this.price,
     required this.imageUrl,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -79,9 +81,7 @@ class CartItem extends StatelessWidget {
               Icons.delete_outline,
               color: Colors.red,
             ),
-            onPressed: () {
-              // Action pour supprimer l'article
-            },
+            onPressed: onDelete,
           ),
         ],
       ),

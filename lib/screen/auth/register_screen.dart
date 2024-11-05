@@ -226,7 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    _authService.signInWithGoogle().then((userCredential) async {
+    _authService.signInWithGoogle(context).then((userCredential) async {
       if (userCredential != null && userCredential.user != null) {
         try {
           // Vérifier si l'utilisateur existe déjà dans Firestore

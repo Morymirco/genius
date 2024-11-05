@@ -1,5 +1,4 @@
 import 'package:coursenligne/config/theme/theme.dart';
-import 'package:coursenligne/screen/cart/card_info_screen.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -16,34 +15,62 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
-  String _selectedPaymentMethod = 'orange';
+  String _selectedPaymentMethod = '';
+
+  void _handlePayment() {
+    switch (_selectedPaymentMethod) {
+      case 'orange':
+        Navigator.pushNamed(
+          context,
+          '/orange-money',
+          arguments: widget.totalAmount,
+        );
+        break;
+      case 'mtn':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('MTN Mobile Money bientôt disponible'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        break;
+      case 'moov':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Moov Money bientôt disponible'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        break;
+      case 'card':
+        Navigator.pushNamed(
+          context,
+          '/card-info',
+          arguments: widget.totalAmount,
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Veuillez sélectionner un mode de paiement'),
+            backgroundColor: Colors.red,
+          ),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
+        title: const Text(
+          'Paiement',
+          style: TextStyle(color: Color(0xFF6A3085)),
+        ),
+        centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'Validation de la commande',
-          style: TextStyle(
-            color: Color(0xFF6A3085),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: Container(
-          margin: const EdgeInsets.only(left: 15),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.colorTint400),
-          ),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF6A3085), size: 18),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ),
+        iconTheme: const IconThemeData(color: Color(0xFF6A3085)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -53,12 +80,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             _buildOrderSummary(),
             const SizedBox(height: 24),
             _buildPaymentMethods(),
-            const SizedBox(height: 24),
-            _buildTotal(),
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomBar(),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              onPressed: _selectedPaymentMethod.isEmpty ? null : _handlePayment,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6A3085),
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                "Continuer",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -199,7 +261,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         _buildPaymentOption(
           'card',
           'Carte bancaire',
-          'assets/images/visa.png',
+          'assets/images/visa1.png',
         ),
       ],
     );
@@ -252,164 +314,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTotal() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF43BCCD).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Sous-total',
-                style: TextStyle(color: Color(0xFF6A3085)),
-              ),
-              Text(
-                '600 milles GNF',
-                style: TextStyle(color: Color(0xFF6A3085)),
-              ),
-            ],
-          ),
-          const Divider(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total à payer',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF6A3085),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  '600 milles GNF',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF43BCCD),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomBar() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: () => _showPaymentConfirmation(),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF6A3085),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.lock_outline, size: 20,color: Colors.white,),
-            SizedBox(width: 8),
-            Text(
-              'Payer maintenant',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showPaymentConfirmation() {
-    if (_selectedPaymentMethod == 'card') {
-      Navigator.pushNamed(
-        context,
-        CardInfoScreen.routeName,
-        arguments: widget.totalAmount,
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Confirmation'),
-          content: const Text('Voulez-vous confirmer le paiement ?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Annuler',
-                style: TextStyle(color: AppColors.colorTint700),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _showSuccessDialog();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF43BCCD),
-              ),
-              child: const Text('Confirmer'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Paiement réussi'),
-        content: const Text('Votre paiement a été effectué avec succès !'),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF43BCCD),
-            ),
-            child: const Text('OK'),
-          ),
-        ],
       ),
     );
   }

@@ -16,6 +16,7 @@ import 'package:coursenligne/screen/profile/profile_screen.dart';
 import 'package:coursenligne/screen/search/search_screen.dart';
 import 'package:coursenligne/screen/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:coursenligne/screen/cart/orange_money_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
   '/home': (context) => const HomeScreenBody(),
@@ -48,4 +49,7 @@ final Map<String, WidgetBuilder> routes = {
     final args = ModalRoute.of(context)?.settings.arguments as double?;
     return CardInfoScreen(amount: args ?? 0.0);
   },
+  OrangeMoneyScreen.routeName: (context) => OrangeMoneyScreen(
+    amount: ModalRoute.of(context)!.settings.arguments as double,
+  ),
 };

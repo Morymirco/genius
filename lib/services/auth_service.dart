@@ -1,7 +1,9 @@
+import 'package:coursenligne/services/base_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthService {
+class AuthService extends BaseService {
   // Instance de FirebaseAuth pour gérer l'authentification
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // Instance de GoogleSignIn pour la connexion avec Google
@@ -53,7 +55,9 @@ class AuthService {
   }
 
   // Connexion avec Google
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle(BuildContext context) async {
+    if (!await checkConnection(context)) return null;
+    
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;

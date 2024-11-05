@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final userCredential = await _authService.signInWithGoogle();
+      final userCredential = await _authService.signInWithGoogle(context);
       
       if (userCredential != null && userCredential.user != null) {
         // Vérifier si c'est un nouvel utilisateur

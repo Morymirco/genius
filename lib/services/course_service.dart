@@ -35,28 +35,46 @@ class CourseService {
         {
           'lessonName': 'Introduction au Design',
           'lessonDuration': '02:10',
-          'videoUrl': 'https://example.com/video1.mp4',
+          'videoUrl': '',
           'description': 'Introduction aux principes de base du design',
           'order': 1,
         },
         {
           'lessonName': 'Principes de base',
           'lessonDuration': '10:25',
-          'videoUrl': 'https://example.com/video2.mp4',
+          'videoUrl': '',
           'description': 'Les fondamentaux du design UI/UX',
           'order': 2,
         },
         {
           'lessonName': 'Prototypage',
           'lessonDuration': '07:55',
-          'videoUrl': 'https://example.com/video3.mp4',
+          'videoUrl': '',
           'description': 'Création de prototypes interactifs',
           'order': 3,
         },
       ];
 
-      // Liste des cours par défaut
+      // Liste des cours par défaut avec les bons chemins d'images
       final List<Map<String, dynamic>> defaultCourses = [
+        {
+          'title': 'Digital Marketing',
+          'coursePrice': '80K GNF',
+          'teacherName': 'Albert Siba Beavogui',
+          'courseDuration': '2h 15m',
+          'numberOfLessons': '15 leçons',
+          'courseImage': 'assets/images/marketting.jpg',
+          'teacherImage': 'assets/images/alexander.jpg',
+          'courseDescription': 'The Digital Marketing course brings a comprehensive approach...',
+          'lessons': defaultLessons,
+          'sliderImages': [
+            'assets/images/ui-ux-design.jpg',
+            'assets/images/coding.jpg',
+            'assets/images/marketing.jpg'
+          ],
+          'category': 'Marketing',
+          'level': 'Débutant',
+        },
         {
           'title': 'UI/UX Design',
           'coursePrice': '200K GNF',
@@ -74,15 +92,6 @@ class CourseService {
           ],
           'category': 'Design',
           'level': 'Intermédiaire',
-          'requirements': [
-            'Connaissances de base en design',
-            'Ordinateur avec Figma installé'
-          ],
-          'whatYouWillLearn': [
-            'Principes de design UI/UX',
-            'Création de wireframes',
-            'Prototypage avec Figma'
-          ],
         },
         {
           'title': 'HTML & CSS',
@@ -101,22 +110,49 @@ class CourseService {
           ],
           'category': 'Développement Web',
           'level': 'Débutant',
-          'requirements': [
-            'Aucun prérequis nécessaire',
-            'Un éditeur de texte'
-          ],
-          'whatYouWillLearn': [
-            'Structure HTML',
-            'Styles CSS',
-            'Responsive Design'
-          ],
         },
-        // Ajoutez d'autres cours ici
+        {
+          'title': 'Flutter Development',
+          'coursePrice': '300K GNF',
+          'teacherName': 'Thierno Barry',
+          'courseDuration': '3h 30m',
+          'numberOfLessons': '25 Leçons',
+          'courseImage': 'assets/images/coding.jpg',
+          'teacherImage': 'assets/images/alexander.jpg',
+          'courseDescription': 'Learn Flutter development from scratch...',
+          'lessons': defaultLessons,
+          'sliderImages': [
+            'assets/images/ui-ux-design.jpg',
+            'assets/images/coding.jpg',
+            'assets/images/marketing.jpg'
+          ],
+          'category': 'Mobile Development',
+          'level': 'Intermédiaire',
+        },
+        {
+          'title': 'React Native',
+          'coursePrice': '280K GNF',
+          'teacherName': 'Mamadou Diallo',
+          'courseDuration': '2h 45m',
+          'numberOfLessons': '18 Leçons',
+          'courseImage': 'assets/images/3affiche.jpg',
+          'teacherImage': 'assets/images/alexander.jpg',
+          'courseDescription': 'Master React Native development...',
+          'lessons': defaultLessons,
+          'sliderImages': [
+            'assets/images/ui-ux-design.jpg',
+            'assets/images/coding.jpg',
+            'assets/images/marketing.jpg'
+          ],
+          'category': 'Mobile Development',
+          'level': 'Avancé',
+        },
       ];
 
       // Ajouter chaque cours dans Firestore
       for (var courseData in defaultCourses) {
         await addCourse(courseData);
+        print('Cours ajouté: ${courseData['title']}');
       }
 
       print('Cours initialisés avec succès');

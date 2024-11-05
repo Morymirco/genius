@@ -1,5 +1,5 @@
 import 'package:coursenligne/config/theme/theme.dart';
-import 'package:coursenligne/model/model.dart';
+import 'package:coursenligne/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,9 +14,25 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<Course> _searchResults = [];
+  final FirestoreService _firestoreService = FirestoreService();
+  List<Map<String, dynamic>> _searchResults = [];
   bool _isSearching = false;
   bool _isLoading = false;
+
+  List<String> _popularTags = [
+    'Flutter',
+    'UI/UX Design',
+    'Marketing Digital',
+    'JavaScript',
+    'Python',
+    'Business',
+  ];
+
+  void _removeTag(String tag) {
+    setState(() {
+      _popularTags.remove(tag);
+    });
+  }
 
   @override
   void dispose() {
@@ -24,21 +40,43 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _handleSearch(String query) {
+  Future<void> _handleSearch(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _isSearching = false;
+        _searchResults = [];
+      });
+      return;
+    }
+
     setState(() {
-      _isSearching = query.isNotEmpty;
+      _isSearching = true;
       _isLoading = true;
     });
 
-    // Simuler un délai de chargement
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      final results = await _firestoreService.searchCourses(query.toLowerCase());
+
+      if (mounted) {
+        setState(() {
+          _searchResults = results;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Erreur lors de la recherche: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _searchResults = []; // Remplacer par la vraie recherche
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erreur lors de la recherche'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    });
+    }
   }
 
   @override
@@ -77,13 +115,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: TextField(
                       controller: _searchController,
                       autofocus: true,
+                      onChanged: _handleSearch,
                       decoration: InputDecoration(
                         hintText: 'Rechercher un cours...',
                         hintStyle: const TextStyle(
                           color: AppColors.colorTint500,
                           fontSize: 14,
                         ),
-                        contentPadding: const EdgeInsets.only(top: 8),
                         prefixIcon: Padding(
                           padding: const EdgeInsets.all(12),
                           child: SvgPicture.asset(
@@ -102,7 +140,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             : null,
                         border: InputBorder.none,
                       ),
-                      onChanged: _handleSearch,
                     ),
                   ),
                 ),
@@ -111,21 +148,15 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
-      body: _isSearching
-          ? _isLoading
-              ? _buildShimmerLoading()
-              : _searchResults.isEmpty
+      body: _isLoading
+          ? _buildShimmerLoading()
+          : _isSearching
+              ? _searchResults.isEmpty
                   ? const Center(
-                      child: Text(
-                        'Aucun résultat trouvé',
-                        style: TextStyle(
-                          color: AppColors.colorTint500,
-                          fontSize: 16,
-                        ),
-                      ),
+                      child: Text('Aucun résultat trouvé'),
                     )
                   : _buildSearchResults()
-          : _buildSuggestedSearches(),
+              : _buildSuggestedSearches(),
     );
   }
 
@@ -138,50 +169,75 @@ class _SearchScreenState extends State<SearchScreen> {
         child: ListView.builder(
           itemCount: 5,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 20,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: 100,
-                          height: 16,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: 150,
-                          height: 16,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
               ),
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildSearchResults() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _searchResults.length,
+      itemBuilder: (context, index) {
+        final course = _searchResults[index];
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 5,
+              ),
+            ],
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(12),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                course['courseImage'] ?? '',
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+            ),
+            title: Text(
+              course['title'] ?? '',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(course['teacherName'] ?? ''),
+                Text(
+                  course['coursePrice'] ?? '',
+                  style: const TextStyle(
+                    color: Color(0xFF43BCCD),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            onTap: () {
+              // Navigation vers le détail du cours
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -202,15 +258,8 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(height: 16),
           Wrap(
             spacing: 8,
-            runSpacing: 8,
-            children: [
-              'Flutter',
-              'React Native',
-              'UI/UX Design',
-              'JavaScript',
-              'Python',
-              'Machine Learning',
-            ].map((tag) => _buildSearchTag(tag)).toList(),
+            runSpacing: 0,
+            children: _popularTags.map((tag) => _buildSearchTag(tag)).toList(),
           ),
         ],
       ),
@@ -218,54 +267,49 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildSearchTag(String tag) {
-    return InkWell(
-      onTap: () {
-        _searchController.text = tag;
-        _handleSearch(tag);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: AppColors.colorTint200,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          tag,
-          style: const TextStyle(
-            color: AppColors.colorTint700,
-            fontSize: 14,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: InkWell(
+        onTap: () {
+          _searchController.text = tag;
+          _handleSearch(tag);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: AppColors.colorTint200,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                tag,
+                style: const TextStyle(
+                  color: AppColors.colorTint700,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () => _removeTag(tag),
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: AppColors.colorTint400,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    size: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSearchResults() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _searchResults.length,
-      itemBuilder: (context, index) {
-        final course = _searchResults[index];
-        return ListTile(
-          // Implémenter l'affichage des résultats de recherche
-          title: Text(course.title ?? ''),
-          subtitle: Text(course.teacherName ?? ''),
-          leading: Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: AssetImage(course.courseImage ?? ''),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          onTap: () {
-            // Navigation vers le détail du cours
-          },
-        );
-      },
     );
   }
 } 

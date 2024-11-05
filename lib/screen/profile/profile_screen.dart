@@ -1,13 +1,13 @@
+import 'dart:math';
+
 import 'package:coursenligne/config/theme/theme.dart';
+import 'package:coursenligne/screen/auth/login_screen.dart';
 import 'package:coursenligne/screen/profile/edit_profile_page.dart';
 import 'package:coursenligne/services/auth_service.dart';
 import 'package:coursenligne/services/firestore_service.dart';
 import 'package:coursenligne/util/size/size-config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:coursenligne/screen/auth/login_screen.dart';
 import 'package:shimmer/shimmer.dart';
-import 'dart:math';
 
 class MonProfil extends StatefulWidget {
   const MonProfil({super.key});
@@ -274,6 +274,321 @@ class _MonProfilState extends State<MonProfil> {
     return name.substring(0, min(2, name.length)).toUpperCase();
   }
 
+  Widget _buildFavoritesList() {
+    final favorites = List<String>.from(_userData?['favorites'] ?? []);
+    
+    if (favorites.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(
+                Icons.favorite_border,
+                size: 48,
+                color: Colors.grey[400],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Aucun cours favori',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Cours favoris',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF6A3085),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 220,
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _firestoreService.getCoursesById(favorites),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Erreur lors du chargement des favoris',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                );
+              }
+
+              final courses = snapshot.data ?? [];
+              
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final course = courses[index];
+                  return Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(right: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                          ),
+                          child: Image.asset(
+                            course['courseImage'] ?? '',
+                            height: 120,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                course['title'] ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 12,
+                                    backgroundImage: AssetImage(
+                                      course['teacherImage'] ?? '',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      course['teacherName'] ?? '',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 14,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCertificatesSection() {
+    final certificates = _userData?['certificates'] as List<dynamic>? ?? [];
+    
+    if (certificates.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(
+                Icons.workspace_premium_outlined,
+                size: 48,
+                color: Colors.grey[400],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Aucun certificat obtenu',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            'Certificats',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF6A3085),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 180,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: certificates.length,
+            itemBuilder: (context, index) {
+              final certificate = certificates[index];
+              return Container(
+                width: 280,
+                margin: const EdgeInsets.only(right: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xFF43BCCD).withOpacity(0.3),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF43BCCD),
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Icon(
+                            Icons.verified,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          Text(
+                            certificate['date'] ?? '',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            certificate['courseName'] ?? '',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            certificate['instructor'] ?? '',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6A3085).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.download_outlined,
+                                      color: Color(0xFF6A3085),
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Text(
+                                      'Télécharger',
+                                      style: TextStyle(
+                                        color: Color(0xFF6A3085),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = _authService.currentUser;
@@ -403,11 +718,13 @@ class _MonProfilState extends State<MonProfil> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Cours Favoris',
+                    'Certificats obtenus',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 16),
-                  _buildFavoritesCourses(),
+                  _buildCertificatesSection(),
+                  const SizedBox(height: 24),
+                  _buildFavoritesList(),
                   const SizedBox(height: 32),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -446,98 +763,6 @@ class _MonProfilState extends State<MonProfil> {
                 ],
               ),
             ),
-    );
-  }
-
-  Widget _buildFavoritesCourses() {
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 3, // Nombre de cours favoris
-        itemBuilder: (context, index) {
-          return Container(
-            width: 160,
-            margin: const EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.asset(
-                    'assets/images/marketting.jpg',
-                    height: 100,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Flutter Avancé',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 10,
-                            backgroundImage: AssetImage('assets/images/samanta-yasamin.jpg'),
-                          ),
-                          const SizedBox(width: 4),
-                          const Expanded(
-                            child: Text(
-                              'Mory koulibaly',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF43BCCD),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.favorite,
-                              color: Colors.white,
-                              size: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 }

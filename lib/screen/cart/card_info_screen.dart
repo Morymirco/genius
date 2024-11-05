@@ -184,7 +184,7 @@ class _CardInfoScreenState extends State<CardInfoScreen> {
                 ),
               ),
               Image.asset(
-                'assets/images/visa.png',
+                'assets/images/visa1.png',
                 height: 40,
               ),
             ],
