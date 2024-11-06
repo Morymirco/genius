@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:coursenligne/config/theme/theme.dart';
 import 'package:coursenligne/screen/auth/login_screen.dart';
 import 'package:coursenligne/screen/profile/edit_profile_page.dart';
+import 'package:coursenligne/screen/settings/settings_screen.dart';
 import 'package:coursenligne/services/auth_service.dart';
 import 'package:coursenligne/services/firestore_service.dart';
 import 'package:coursenligne/util/size/size-config.dart';
@@ -589,6 +590,35 @@ class _MonProfilState extends State<MonProfil> {
     );
   }
 
+  Widget _buildSettingsButton() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: const Color(0xFF43BCCD).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(
+            Icons.settings,
+            color: Color(0xFF43BCCD),
+          ),
+        ),
+        title: const Text(
+          'Paramètres',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: () {
+          Navigator.pushNamed(context, SettingsScreen.routeName);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = _authService.currentUser;
@@ -726,6 +756,8 @@ class _MonProfilState extends State<MonProfil> {
                   const SizedBox(height: 24),
                   _buildFavoritesList(),
                   const SizedBox(height: 32),
+                  _buildSettingsButton(),
+                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: ElevatedButton(
